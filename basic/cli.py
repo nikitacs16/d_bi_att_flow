@@ -1,5 +1,5 @@
 import os
-
+import glob
 import tensorflow as tf
 
 from basic.main import main as m
@@ -97,13 +97,35 @@ flags.DEFINE_bool("q2c_att", True, "question-to-context attention? [True]")
 flags.DEFINE_bool("c2q_att", True, "context-to-question attention? [True]")
 flags.DEFINE_bool("dynamic_att", False, "Dynamic attention [False]")
 
+def get_the_best_model_on_f1(out_dir):
+
+
 
 def main(_):
-    config = flags.FLAGS
+	config = flags.FLAGS
 
-    config.out_dir = os.path.join(config.out_base_dir, config.model_name, str(config.run_id).zfill(2))
+	config.out_dir = os.path.join(config.out_base_dir, config.model_name, str(config.run_id).zfill(2))
+	if config.mode =="test":
+		test_json_path = config.data_dir + '/' + 'test-v1.1.json'
+		dev_json_path = config.data_dir + '/' + 'dev-v1.1.json'
+		if config.answer_path == "":
+			answer_path = os.path.join(config.out_dir,"answer")
+		else:
+			answer_path = config.answer_path
 
-    m(config)
+		if os.path.isfile(dev_json_path) :
+			os.system('cp '+dev_json_path+ ' '+ answer_path)
+		else:
+			raise ValueError('dev-v1.1.json not found in the specified folder')
+
+		if os.path.isfile(test_json_path) :
+			os.system('cp '+test_json_path+ ' '+answer_path)
+		else:
+			raise ValueError('test-v1.1.json not found in the specified folder')
+
+		#copy the test.json to the eval folder
+
+	m(config)
 
 if __name__ == "__main__":
-    tf.app.run()
+	tf.app.run()
