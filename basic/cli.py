@@ -1,7 +1,7 @@
 import os
 import glob
 import tensorflow as tf
-
+from ..metrics.evaluate_squad import evaluate
 from basic.main import main as m
 
 flags = tf.app.flags
@@ -98,6 +98,12 @@ flags.DEFINE_bool("c2q_att", True, "context-to-question attention? [True]")
 flags.DEFINE_bool("dynamic_att", False, "Dynamic attention [False]")
 
 def get_the_best_model_on_f1(out_dir):
+	file_path = out_dir
+	for i in sorted(glob.glob(out_dir+'/dev-0*.json')):
+		e,f = evaluate('dev-v1.1.json',i)
+		if f > max_f1:
+			max_f1 = f
+			file_for_computation = i
 
 
 
