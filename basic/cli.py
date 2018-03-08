@@ -5,7 +5,7 @@ import tensorflow as tf
 from basic.main import main as m
 import re
 flags = tf.app.flags
-
+home = os.path.expanduser("~")
 # Names and directories
 flags.DEFINE_string("model_name", "basic", "Model name [basic]")
 flags.DEFINE_string("data_dir", "data/squad", "Data dir [data/squad]")
@@ -62,9 +62,9 @@ flags.DEFINE_bool("cpu_opt", False, "CPU optimization? GPU computation can be sl
 # Logging and saving options
 flags.DEFINE_boolean("progress", True, "Show progress? [True]")
 flags.DEFINE_integer("log_period", 100, "Log period [100]")
-flags.DEFINE_integer("eval_period", 1000, "Eval period [1000]")
-flags.DEFINE_integer("save_period", 1000, "Save Period [1000]")
-flags.DEFINE_integer("max_to_keep", 20, "Max recent saves to keep [20]")
+flags.DEFINE_integer("eval_period", 500, "Eval period [1000]")
+flags.DEFINE_integer("save_period", 500, "Save Period [1000]")
+flags.DEFINE_integer("max_to_keep", 40, "Max recent saves to keep [20]")
 flags.DEFINE_bool("dump_eval", True, "dump eval? [True]")
 flags.DEFINE_bool("dump_answer", True, "dump answer? [True]")
 flags.DEFINE_bool("save_on_best_f1", True, "save model with best F1 [True]")
@@ -76,9 +76,9 @@ flags.DEFINE_float("decay", 0.9, "Exponential moving average decay for logging v
 # Thresholds for speed and less memory usage
 flags.DEFINE_integer("word_count_th", 10, "word count th [100]")
 flags.DEFINE_integer("char_count_th", 50, "char count th [500]")
-flags.DEFINE_integer("sent_size_th", 400, "sent size th [64]")
+flags.DEFINE_integer("sent_size_th", 256, "sent size th [64]")
 flags.DEFINE_integer("num_sents_th", 8, "num sents th [8]")
-flags.DEFINE_integer("ques_size_th", 30, "ques size th [32]")
+flags.DEFINE_integer("ques_size_th", 64, "ques size th [32]")
 flags.DEFINE_integer("word_size_th", 16, "word size th [16]")
 flags.DEFINE_integer("para_size_th", 256, "para size th [256]")
 

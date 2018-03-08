@@ -72,7 +72,7 @@ class GraphHandler(object):
             with open(path, 'w') as fh:
                 json.dump(short_floats(e.dict, precision), fh)
 
-    def dump_answer(self, e, global_step=0, path=None):
+    def dump_answer(self, e, global_step=0, sess=None,path=None):
         assert isinstance(e, Evaluation)
         path = path or os.path.join(self.config.answer_dir, "{}-{}.json".format(e.data_type, str(e.global_step).zfill(6)))
         with open(path, 'w') as fh:
