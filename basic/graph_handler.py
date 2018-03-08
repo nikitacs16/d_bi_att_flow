@@ -7,7 +7,7 @@ import tensorflow as tf
 
 from basic.evaluator import Evaluation, F1Evaluation
 from my.utils import short_floats
-
+from metrics.evaluator_off import evaluate
 import pickle
 
 
@@ -18,6 +18,7 @@ class GraphHandler(object):
         self.saver = tf.train.Saver(max_to_keep=config.max_to_keep)
         self.writer = None
         self.save_path = os.path.join(config.save_dir, config.model_name)
+        self.best_squad_f1 = 0
 
     def initialize(self, sess):
         sess.run(tf.initialize_all_variables())
@@ -71,9 +72,16 @@ class GraphHandler(object):
             with open(path, 'w') as fh:
                 json.dump(short_floats(e.dict, precision), fh)
 
-    def dump_answer(self, e, path=None):
+    def dump_answer(self, e, global_step=0, path=None):
         assert isinstance(e, Evaluation)
         path = path or os.path.join(self.config.answer_dir, "{}-{}.json".format(e.data_type, str(e.global_step).zfill(6)))
         with open(path, 'w') as fh:
             json.dump(e.id2answer_dict, fh)
+        if self.config.save_on_best_f1:
+            e,f = evaluate(path,os.path.join(self.config.data_dir,"dev-v1.1.json"))
+            if f > self.best_squad_f1:
+                self.best_squad_f1 = e
+                saver = tf.train.Saver(max_to_keep=self.config.max_to_keep)
+                saver.save(sess, self.save_path, global_step=global_step,latest_filename='checkpoint_best')
+
 

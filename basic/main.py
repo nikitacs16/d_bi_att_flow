@@ -14,7 +14,7 @@ from basic.graph_handler import GraphHandler
 from basic.model import get_multi_gpu_models
 from basic.trainer import MultiGPUTrainer
 from basic.read_data import read_data, get_squad_data_filter, update_config
-
+from metrics.evaluator import get_all_metrics
 
 def main(config):
     set_dirs(config)
@@ -122,7 +122,8 @@ def _train(config):
             if config.dump_eval:
                 graph_handler.dump_eval(e_dev)
             if config.dump_answer:
-                graph_handler.dump_answer(e_dev)
+                graph_handler.dump_answer(e_dev,global_step=global_step)
+
     if global_step % config.save_period != 0:
         graph_handler.save(sess, global_step=global_step)
 
@@ -167,10 +168,15 @@ def _test(config):
     if config.dump_answer:
         print("dumping answer ...")
         graph_handler.dump_answer(e)
+        #add the bleu, rouge here
+    
+    else:
+        print("dump_answer is False. Cannot compute rouge,bleu")
+
     if config.dump_eval:
         print("dumping eval ...")
         graph_handler.dump_eval(e)
-
+   
 
 def _forward(config):
     assert config.load

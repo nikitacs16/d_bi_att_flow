@@ -1,9 +1,9 @@
 import os
 import glob
 import tensorflow as tf
-from ..metrics.evaluate_squad import evaluate
+#from ..metrics.evaluate_and_dump import evaluate
 from basic.main import main as m
-
+import re
 flags = tf.app.flags
 
 # Names and directories
@@ -66,6 +66,8 @@ flags.DEFINE_integer("save_period", 1000, "Save Period [1000]")
 flags.DEFINE_integer("max_to_keep", 20, "Max recent saves to keep [20]")
 flags.DEFINE_bool("dump_eval", True, "dump eval? [True]")
 flags.DEFINE_bool("dump_answer", True, "dump answer? [True]")
+flags.DEFINE_bool("save_on_best_f1", True, "save model with best F1 [True]")
+
 flags.DEFINE_bool("vis", False, "output visualization numbers? [False]")
 flags.DEFINE_bool("dump_pickle", True, "Dump pickle instead of json? [True]")
 flags.DEFINE_float("decay", 0.9, "Exponential moving average decay for logging values [0.9]")
@@ -97,40 +99,14 @@ flags.DEFINE_bool("q2c_att", True, "question-to-context attention? [True]")
 flags.DEFINE_bool("c2q_att", True, "context-to-question attention? [True]")
 flags.DEFINE_bool("dynamic_att", False, "Dynamic attention [False]")
 
-def get_the_best_model_on_f1(out_dir):
-	file_path = out_dir
-	for i in sorted(glob.glob(out_dir+'/dev-0*.json')):
-		e,f = evaluate('dev-v1.1.json',i)
-		if f > max_f1:
-			max_f1 = f
-			file_for_computation = i
-
 
 
 def main(_):
 	config = flags.FLAGS
 
 	config.out_dir = os.path.join(config.out_base_dir, config.model_name, str(config.run_id).zfill(2))
-	if config.mode =="test":
-		test_json_path = config.data_dir + '/' + 'test-v1.1.json'
-		dev_json_path = config.data_dir + '/' + 'dev-v1.1.json'
-		if config.answer_path == "":
-			answer_path = os.path.join(config.out_dir,"answer")
-		else:
-			answer_path = config.answer_path
-
-		if os.path.isfile(dev_json_path) :
-			os.system('cp '+dev_json_path+ ' '+ answer_path)
-		else:
-			raise ValueError('dev-v1.1.json not found in the specified folder')
-
-		if os.path.isfile(test_json_path) :
-			os.system('cp '+test_json_path+ ' '+answer_path)
-		else:
-			raise ValueError('test-v1.1.json not found in the specified folder')
-
-		#copy the test.json to the eval folder
-
+	
+	
 	m(config)
 
 if __name__ == "__main__":
