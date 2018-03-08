@@ -78,7 +78,7 @@ class GraphHandler(object):
         with open(path, 'w') as fh:
             json.dump(e.id2answer_dict, fh)
         if self.config.save_on_best_f1:
-            e,f = evaluate(path,os.path.join(self.config.data_dir,"dev-v1.1.json"))
+            e,f = evaluate(os.path.join(self.config.source_dir,"dev-v1.1.json"),path)
             if f > self.best_squad_f1:
                 self.best_squad_f1 = e
                 saver = tf.train.Saver(max_to_keep=self.config.max_to_keep)
