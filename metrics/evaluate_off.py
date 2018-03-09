@@ -93,7 +93,9 @@ def evaluate(dataset_f, predictions_f,all_metrics=False,save_dir=""):
         for key in rouge_dict: 
             print("%s\t%f"%(key,rouge_dict[key]),file=f)
         bleu_score = bleu.moses_multi_bleu(pred,gt)
-        print("%s\t%f"%('bleu',bleu_score),file=f)  
+        print("%s\t%f"%('bleu',bleu_score),file=f)
+        print("%s\t%f"%('f1',f1),file=f)
+        print("%s\t%f"%('exact_match',exact_match),file=f)  
 
 
     return exact_match, f1
