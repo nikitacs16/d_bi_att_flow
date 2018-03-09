@@ -27,12 +27,14 @@ class GraphHandler(object):
 
         if self.config.mode == 'train':
             self.writer = tf.train.SummaryWriter(self.config.log_dir, graph=tf.get_default_graph())
+        if self.config.mode == 'test' and self.config.save_on_best_f1:
+            self._load(sess,latest_filename="checkpoint_best")
 
     def save(self, sess, global_step=None):
         saver = tf.train.Saver(max_to_keep=self.config.max_to_keep)
         saver.save(sess, self.save_path, global_step=global_step)
 
-    def _load(self, sess):
+    def _load(self, sess,latest_filename=None):
         config = self.config
         vars_ = {var.name.split(":")[0]: var for var in tf.all_variables()}
         if config.load_ema:
@@ -48,7 +50,10 @@ class GraphHandler(object):
             save_path = os.path.join(config.save_dir, "{}-{}".format(config.model_name, config.load_step))
         else:
             save_dir = config.save_dir
-            checkpoint = tf.train.get_checkpoint_state(save_dir)
+            if latest_filename is not None:
+                checkpoint = tf.train.get_checkpoint_state(save_dir)
+            else:
+                checkpoint = tf.train_get_checkpoint_state(save_dir,latest_filename=latest_filename)
             assert checkpoint is not None, "cannot load checkpoint at {}".format(save_dir)
             save_path = checkpoint.model_checkpoint_path
         print("Loading saved model from {}".format(save_path))
