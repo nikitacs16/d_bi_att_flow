@@ -168,7 +168,7 @@ def _test(config):
     if config.dump_answer:
         print("dumping answer ...")
         graph_handler.dump_answer(e)
-        evaluate(os.path.join(config.source_dir,config.test_file_name),os.path.join(config.answer_dir,"{}-{}.json".format(e.data_type, str(e.global_step).zfill(6))),all_metrics=False,save_dir="") 
+        evaluate(os.path.join(config.source_dir,config.test_file_name),os.path.join(config.answer_dir,"{}-{}.json".format(e.data_type, str(e.global_step).zfill(6))),all_metrics=False,save_dir=config.answer_dir) 
     else:
         print("dump_answer is False. Cannot compute rouge,bleu")
 
