@@ -14,7 +14,7 @@ from basic.graph_handler import GraphHandler
 from basic.model import get_multi_gpu_models
 from basic.trainer import MultiGPUTrainer
 from basic.read_data import read_data, get_squad_data_filter, update_config
-from metrics.evaluator import get_all_metrics
+from metrics.evaluate_off import evaluate
 
 def main(config):
     set_dirs(config)
@@ -169,6 +169,7 @@ def _test(config):
         print("dumping answer ...")
         graph_handler.dump_answer(e)
         #add the bleu, rouge here
+        evaluate(,all_metrics=False,save_dir="") #incomplete
     
     else:
         print("dump_answer is False. Cannot compute rouge,bleu")

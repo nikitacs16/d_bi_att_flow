@@ -6,7 +6,7 @@ import re
 import argparse
 import json
 import sys
-
+import bleu, rouge
 
 def normalize_answer(s):
     """Lower text and remove punctuation, articles and extra whitespace."""
@@ -51,7 +51,7 @@ def metric_max_over_ground_truths(metric_fn, prediction, ground_truths):
     return max(scores_for_ground_truths)
 
 
-def evaluate(dataset_f, predictions_f):
+def evaluate(dataset_f, predictions_f,all_metrics=False,save_dir=""):
     with open(dataset_f) as dataset_file:
         dataset_json = json.load(dataset_file)
         dataset = dataset_json['data']
@@ -61,9 +61,6 @@ def evaluate(dataset_f, predictions_f):
     pred = []
     f1 = exact_match = total = count = 0
     for article in dataset:
-        if article['title'] not in predictions:
-            count = count + 1
-            continue
         for paragraph in article['paragraphs']:
             for qa in paragraph['qas']:
                 total += 1
@@ -78,6 +75,8 @@ def evaluate(dataset_f, predictions_f):
                 '''
                 ground_truths = list(map(lambda x: x['text'], qa['answers']))
                 prediction = predictions[str(article['title'])]
+                if prediction == "":
+                    prediction = 'n_a'
                 gt.append(ground_truths[0])
                 pred.append(prediction)
                 exact_match += metric_max_over_ground_truths(
@@ -87,23 +86,15 @@ def evaluate(dataset_f, predictions_f):
 
     exact_match = 100.0 * exact_match / total
     f1 = 100.0 * f1 / total
-    print(total)
+    if all_metrics:
+        rouge_dict = rouge.rouge(pred,gt)
+        file_path = os.path.join(save_dir,'results.txt')
+        f = open(file_path,'w')
+        for key in rouge_dict: 
+            print("%s\t%f"%(key,rouge_dict[key]),file=f)
+        bleu_score = bleu.moses_multi_bleu(pred,gt)
+        print("%s\t%f"%('bleu',bleu_score),file=f)  
+
+
     return exact_match, f1
 
-if __name__ == '__main__':
-    expected_version = '1.1'
-    parser = argparse.ArgumentParser(
-        description='Evaluation for SQuAD ' + expected_version)
-    parser.add_argument('dataset_file', help='Dataset file')
-    parser.add_argument('prediction_file', help='Prediction File')
-    args = parser.parse_args()
-    with open(args.dataset_file) as dataset_file:
-        dataset_json = json.load(dataset_file)
-        if (dataset_json['version'] != expected_version):
-            print('Evaluation expects v-' + expected_version +
-                  ', but got dataset with v-' + dataset_json['version'],
-                  file=sys.stderr)
-        dataset = dataset_json['data']
-    with open(args.prediction_file) as prediction_file:
-        predictions = json.load(prediction_file)
-    print(json.dumps(evaluate(dataset, predictions)))
