@@ -8,6 +8,7 @@ import json
 import sys
 from metrics.bleu import moses_multi_bleu
 from metrics.rouge import rouge
+import os
 
 def normalize_answer(s):
     """Lower text and remove punctuation, articles and extra whitespace."""
@@ -63,22 +64,17 @@ def evaluate(dataset_f, predictions_f,all_metrics=False,save_dir=""):
     f1 = exact_match = total = count = 0
     for article in dataset:
         for paragraph in article['paragraphs']:
+            if str(article['title']) not in predictions: #needs a lookup in case of dev-v1.1.json
+                continue
 	    
             for qa in paragraph['qas']:
                 total += 1
-                '''
-                if qa['id'] not in predictions:
-                   # pass
-                    #message = 'Unanswered question ' + qa['id'] + \
-                     #         ' will receive score 0.'
-                    #print(message, file=sys.stderr)
-                #    count = count + 1111111111111
-                    continue
-                '''
+                
                 ground_truths = list(map(lambda x: x['text'], qa['answers']))
-                if  str(qa['id']) not in predicions:
-		    pr
-                prediction = predictions[str(qa['id'])]
+                if str(qa['id']) not in predictions:
+                    prediction = ""
+                else:
+                    prediction = predictions[str(qa['id'])]
                 if prediction == "":
                     prediction = 'n_a'
                 gt.append(ground_truths[0])
@@ -100,7 +96,6 @@ def evaluate(dataset_f, predictions_f,all_metrics=False,save_dir=""):
         print("%s\t%f"%('bleu',bleu_score),file=f)
         print("%s\t%f"%('f1',f1),file=f)
         print("%s\t%f"%('exact_match',exact_match),file=f)  
-
 
     return exact_match, f1
 

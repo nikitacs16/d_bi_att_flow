@@ -1,0 +1,12 @@
+rouge_2/r_score	0.257807
+rouge_l/p_score	0.276267
+rouge_l/r_score	0.312545
+rouge_2/p_score	0.223734
+rouge_l/f_score	0.216788
+rouge_1/f_score	0.260663
+rouge_1/p_score	0.288614
+rouge_1/r_score	0.324664
+rouge_2/f_score	0.198159
+bleu	18.670000
+f1	25.289553
+exact_match	6.883408
