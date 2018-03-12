@@ -7,7 +7,7 @@ import tensorflow as tf
 
 from basic.evaluator import Evaluation, F1Evaluation
 from my.utils import short_floats
-from metrics.evaluator_off import evaluate
+from metrics.evaluate_off import evaluate
 import pickle
 
 
@@ -51,9 +51,9 @@ class GraphHandler(object):
         else:
             save_dir = config.save_dir
             if latest_filename is not None:
-                checkpoint = tf.train.get_checkpoint_state(save_dir)
+                checkpoint = tf.train.get_checkpoint_state(save_dir,latest_filename=latest_filename)
             else:
-                checkpoint = tf.train_get_checkpoint_state(save_dir,latest_filename=latest_filename)
+                checkpoint = tf.train.get_checkpoint_state(save_dir)
             assert checkpoint is not None, "cannot load checkpoint at {}".format(save_dir)
             save_path = checkpoint.model_checkpoint_path
         print("Loading saved model from {}".format(save_path))

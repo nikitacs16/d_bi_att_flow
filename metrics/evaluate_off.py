@@ -6,7 +6,8 @@ import re
 import argparse
 import json
 import sys
-import bleu, rouge
+from metrics.bleu import moses_multi_bleu
+from metrics.rouge import rouge
 
 def normalize_answer(s):
     """Lower text and remove punctuation, articles and extra whitespace."""
@@ -62,11 +63,12 @@ def evaluate(dataset_f, predictions_f,all_metrics=False,save_dir=""):
     f1 = exact_match = total = count = 0
     for article in dataset:
         for paragraph in article['paragraphs']:
+	    
             for qa in paragraph['qas']:
                 total += 1
                 '''
                 if qa['id'] not in predictions:
-                    pass
+                   # pass
                     #message = 'Unanswered question ' + qa['id'] + \
                      #         ' will receive score 0.'
                     #print(message, file=sys.stderr)
@@ -74,7 +76,9 @@ def evaluate(dataset_f, predictions_f,all_metrics=False,save_dir=""):
                     continue
                 '''
                 ground_truths = list(map(lambda x: x['text'], qa['answers']))
-                prediction = predictions[str(article['title'])]
+                if  str(qa['id']) not in predicions:
+		    pr
+                prediction = predictions[str(qa['id'])]
                 if prediction == "":
                     prediction = 'n_a'
                 gt.append(ground_truths[0])
@@ -87,12 +91,12 @@ def evaluate(dataset_f, predictions_f,all_metrics=False,save_dir=""):
     exact_match = 100.0 * exact_match / total
     f1 = 100.0 * f1 / total
     if all_metrics:
-        rouge_dict = rouge.rouge(pred,gt)
+        rouge_dict = rouge(pred,gt)
         file_path = os.path.join(save_dir,'results.txt')
         f = open(file_path,'w')
         for key in rouge_dict: 
             print("%s\t%f"%(key,rouge_dict[key]),file=f)
-        bleu_score = bleu.moses_multi_bleu(pred,gt)
+        bleu_score = moses_multi_bleu(pred,gt)
         print("%s\t%f"%('bleu',bleu_score),file=f)
         print("%s\t%f"%('f1',f1),file=f)
         print("%s\t%f"%('exact_match',exact_match),file=f)  
