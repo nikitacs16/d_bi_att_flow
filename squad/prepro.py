@@ -172,6 +172,11 @@ def prepro_each(args, data_type, start_ratio=0.0, stop_ratio=1.0, out_name="defa
                     answer_text = answer['text']
                     answers.append(answer_text)
                     answer_start = answer['answer_start']
+                    if isinstance(answer_start,int): #Hack. Will be fine once normal data is up
+                        dump_flag = True
+                    else:
+                        dump_flag = False
+
                     answer_stop = answer_start + len(answer_text)
                     # TODO : put some function that gives word_start, word_stop here
                     yi0, yi1 = get_word_span(context, xi, answer_start, answer_stop)
@@ -199,16 +204,16 @@ def prepro_each(args, data_type, start_ratio=0.0, stop_ratio=1.0, out_name="defa
                     lower_word_counter[qij.lower()] += 1
                     for qijk in qij:
                         char_counter[qijk] += 1
-
-                q.append(qi)
-                cq.append(cqi)
-                y.append(yi)
-                cy.append(cyi)
-                rx.append(rxi)
-                rcx.append(rxi)
-                ids.append(qa['id'])
-                idxs.append(len(idxs))
-                answerss.append(answers)
+                if dump_flag:        
+                    q.append(qi)
+                    cq.append(cqi)
+                    y.append(yi)
+                    cy.append(cyi)
+                    rx.append(rxi)
+                    rcx.append(rxi)
+                    ids.append(qa['id'])
+                    idxs.append(len(idxs))
+                    answerss.append(answers)
 
             if args.debug:
                 break
