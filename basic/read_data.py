@@ -9,7 +9,7 @@ import numpy as np
 
 from my.tensorflow import grouper
 from my.utils import index
-
+import tensorflow as tf
 
 class Data(object):
     def get_size(self):
@@ -249,9 +249,11 @@ def get_squad_data_filter(config):
         if config.data_filter == 'max':
             for start, stop in y:
                     if stop[0] >= config.num_sents_th:
+                        tf.logging.info(stop[0])
                         return False
                     if start[0] != stop[0]:
-                        return False
+                        #print('Hep')
+                        return True
                     if stop[1] >= config.sent_size_th:
                         return False
         elif config.data_filter == 'valid':
