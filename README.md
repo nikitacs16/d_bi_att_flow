@@ -1,13 +1,8 @@
-# Baseline for Towards Exploiting Background Knowledge for Building Conversation Systems (EMNLP 2018)
-Paper link here
-We continue to use the original implementation. We have only modified some of the data pre-processing files. Hence The ROUGE and BLEU scripts have been taken from [https://github.com/google/seq2seq][this repository] For reproducibility of numbers, please use the parameters mentioned in this repository.
+# Baseline (BiDAF) for Towards Exploiting Background Knowledge for Building Conversation Systems (EMNLP 2018)
+We continue to use the original implementation. We have only modified some of the data pre-processing files. Hence The ROUGE and BLEU scripts have been taken from [this repository]:https://github.com/google/seq2seq For reproducibility of numbers, please use the parameters mentioned in this repository.
 
 ## Bi-directional Attention Flow for Machine Comprehension 
  
-- This the original implementation of [Bi-directional Attention Flow for Machine Comprehension][paper].
-- The CodaLab worksheet for the [SQuAD Leaderboard][squad] submission is available [here][worksheet].
-- For TensorFlow v1.2 compatible version, see the [dev][dev] branch.
-- Please contact [Minjoon Seo][minjoon] ([@seominjoon][minjoon-github]) for questions and suggestions.
 
 ## 0. Requirements
 #### General
