@@ -1,5 +1,5 @@
 # Baseline (BiDAF) for Towards Exploiting Background Knowledge for Building Conversation Systems (EMNLP 2018)
-We continue to use the original implementation. We have only modified some of the data pre-processing files. Hence The ROUGE and BLEU scripts have been taken from [this repository]:https://github.com/google/seq2seq For reproducibility of numbers, please use the parameters mentioned in this repository.
+We continue to use the [original implementation](https://github.com/allenai/bi-att-flow). We have only modified some of the data pre-processing files. Hence The ROUGE and BLEU scripts have been taken from [this repository](https://github.com/google/seq2seq) For reproducibility of numbers, please use the parameters mentioned in this repository.
 
 ## Bi-directional Attention Flow for Machine Comprehension 
  
